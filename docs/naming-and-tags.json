@@ -1,0 +1,27 @@
+{
+  "region": "canadacentral",
+  "team": "pending",
+  "env": "dev",
+  "names": {
+    "resourceGroup": "rg-csp451-pending-dev",
+    "mockBureauVm": "vm-bureau-pending",
+    "appService": "app-loanrisk-pending",
+    "postgres": "psql-loanrisk-pending",
+    "keyVault": "kv-loanrisk-pending",
+    "serviceBus": "sb-loanrisk-pending",
+    "apiManagement": "apim-loanrisk-pending"
+  },
+  "tags": {
+    "course": "CSP451",
+    "term": "2026F",
+    "team": "pending",
+    "owner": "180346215",
+    "env": "dev"
+  },
+  "notes": [
+    "All lowercase. Region is canadacentral for every resource.",
+    "Key Vault, storage account, and App Service hostnames must be globally unique.",
+    "If a name is taken, append student ID digits rather than inventing a new pattern.",
+    "Team name is a placeholder pending assignment; update all names and tags once placed on a team."
+  ]
+}
