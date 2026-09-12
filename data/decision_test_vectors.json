@@ -1,0 +1,579 @@
+{
+  "rulesVersion": "1.0.0",
+  "generatedFor": "CSP451 2026F Allymon Loan Risk Engine",
+  "syntheticData": true,
+  "vectors": [
+    {
+      "id": "V01",
+      "note": "Clean approval. Strong score, comfortable debt service, nothing adverse fires.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0004",
+        "annualIncomeCad": 95000,
+        "monthlyDebtCad": 1500,
+        "requestedAmount": 20000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 765,
+        "fileAgeMonths": 84,
+        "openTrades": 5,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 765,
+        "fileAgeMonths": 84,
+        "openTrades": 5,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "APPROVE",
+        "riskTier": "LOW",
+        "score": 770,
+        "dtiRatio": 0.1895,
+        "drivers": [
+          {
+            "code": "P01_STRONG_CREDIT_SCORE",
+            "contribution": 60
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          }
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "id": "V02",
+      "note": "Debt-to-income above the 0.42 ceiling forces a decline.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0003",
+        "annualIncomeCad": 60000,
+        "monthlyDebtCad": 2400,
+        "requestedAmount": 10000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 700,
+        "fileAgeMonths": 60,
+        "openTrades": 4,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 700,
+        "fileAgeMonths": 60,
+        "openTrades": 4,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "DENY",
+        "riskTier": "HIGH",
+        "score": 420,
+        "dtiRatio": 0.48,
+        "drivers": [
+          {
+            "code": "R02_HIGH_DTI",
+            "contribution": -95
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          },
+          {
+            "code": "P03_STABLE_EMPLOYMENT",
+            "contribution": 45
+          }
+        ],
+        "reasonCodes": [
+          "R02_HIGH_DTI"
+        ]
+      }
+    },
+    {
+      "id": "V03",
+      "note": "Score below the 580 floor.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0021",
+        "annualIncomeCad": 52000,
+        "monthlyDebtCad": 900,
+        "requestedAmount": 8000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 545,
+        "fileAgeMonths": 48,
+        "openTrades": 3,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "TRANSUNION_MOCK",
+        "creditScore": 545,
+        "fileAgeMonths": 48,
+        "openTrades": 3,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "DENY",
+        "riskTier": "HIGH",
+        "score": 430,
+        "dtiRatio": 0.2077,
+        "drivers": [
+          {
+            "code": "R01_LOW_CREDIT_SCORE",
+            "contribution": -100
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          }
+        ],
+        "reasonCodes": [
+          "R01_LOW_CREDIT_SCORE"
+        ]
+      }
+    },
+    {
+      "id": "V04",
+      "note": "Thin file routes to manual review.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0009",
+        "annualIncomeCad": 71000,
+        "monthlyDebtCad": 1000,
+        "requestedAmount": 12000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 690,
+        "fileAgeMonths": 7,
+        "openTrades": 1,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 690,
+        "fileAgeMonths": 7,
+        "openTrades": 1,
+        "delinquencies24m": 0,
+        "thinFile": true,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "MANUAL_REVIEW",
+        "riskTier": "MEDIUM",
+        "score": 610,
+        "dtiRatio": 0.169,
+        "drivers": [
+          {
+            "code": "R05_THIN_FILE",
+            "contribution": -75
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          }
+        ],
+        "reasonCodes": [
+          "R05_THIN_FILE"
+        ]
+      }
+    },
+    {
+      "id": "V05",
+      "note": "Single delinquency plus a large request. Two adverse codes outrank every supporting one.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0033",
+        "annualIncomeCad": 48000,
+        "monthlyDebtCad": 1300,
+        "requestedAmount": 30000,
+        "employmentStatus": "SELF_EMPLOYED",
+        "creditScore": 665,
+        "fileAgeMonths": 36,
+        "openTrades": 4,
+        "delinquencies24m": 1
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "TRANSUNION_MOCK",
+        "creditScore": 665,
+        "fileAgeMonths": 36,
+        "openTrades": 4,
+        "delinquencies24m": 1,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "MANUAL_REVIEW",
+        "riskTier": "HIGH",
+        "score": 440,
+        "dtiRatio": 0.325,
+        "drivers": [
+          {
+            "code": "R04_RECENT_DELINQUENCY",
+            "contribution": -80
+          },
+          {
+            "code": "R06_HIGH_LOAN_TO_INCOME",
+            "contribution": -70
+          },
+          {
+            "code": "P05_ESTABLISHED_FILE",
+            "contribution": 40
+          }
+        ],
+        "reasonCodes": [
+          "R04_RECENT_DELINQUENCY",
+          "R06_HIGH_LOAN_TO_INCOME"
+        ]
+      }
+    },
+    {
+      "id": "V06",
+      "note": "Bureau returned nothing usable, which also makes the file thin.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0050",
+        "annualIncomeCad": 88000,
+        "monthlyDebtCad": 1200,
+        "requestedAmount": 15000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": null,
+        "fileAgeMonths": null,
+        "openTrades": 0,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "NONE",
+        "creditScore": null,
+        "fileAgeMonths": null,
+        "openTrades": 0,
+        "delinquencies24m": 0,
+        "thinFile": true,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "MANUAL_REVIEW",
+        "riskTier": "MEDIUM",
+        "score": 550,
+        "dtiRatio": 0.1636,
+        "drivers": [
+          {
+            "code": "R08_BUREAU_DATA_MISSING",
+            "contribution": -90
+          },
+          {
+            "code": "R05_THIN_FILE",
+            "contribution": -75
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          }
+        ],
+        "reasonCodes": [
+          "R08_BUREAU_DATA_MISSING",
+          "R05_THIN_FILE"
+        ]
+      }
+    },
+    {
+      "id": "V07",
+      "note": "Boundary: credit score exactly 720, the bottom of the strong band. Expect the +60 contribution, not +30.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0012",
+        "annualIncomeCad": 80000,
+        "monthlyDebtCad": 1400,
+        "requestedAmount": 15000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 720,
+        "fileAgeMonths": 96,
+        "openTrades": 4,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 720,
+        "fileAgeMonths": 96,
+        "openTrades": 4,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "APPROVE",
+        "riskTier": "LOW",
+        "score": 770,
+        "dtiRatio": 0.21,
+        "drivers": [
+          {
+            "code": "P01_STRONG_CREDIT_SCORE",
+            "contribution": 60
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          }
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "id": "V08",
+      "note": "Boundary: credit score exactly 640, the bottom of the neutral band. The score dimension still emits a supporting driver, at the lower contribution.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0018",
+        "annualIncomeCad": 66000,
+        "monthlyDebtCad": 1600,
+        "requestedAmount": 12000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 640,
+        "fileAgeMonths": 72,
+        "openTrades": 3,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "TRANSUNION_MOCK",
+        "creditScore": 640,
+        "fileAgeMonths": 72,
+        "openTrades": 3,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "APPROVE",
+        "riskTier": "MEDIUM",
+        "score": 650,
+        "dtiRatio": 0.2909,
+        "drivers": [
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          },
+          {
+            "code": "P03_STABLE_EMPLOYMENT",
+            "contribution": 45
+          }
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "id": "V09",
+      "note": "Boundary: credit score exactly 580 refers, it does not decline. 579 would decline.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0027",
+        "annualIncomeCad": 58000,
+        "monthlyDebtCad": 1450,
+        "requestedAmount": 9000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 580,
+        "fileAgeMonths": 54,
+        "openTrades": 3,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 580,
+        "fileAgeMonths": 54,
+        "openTrades": 3,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "MANUAL_REVIEW",
+        "riskTier": "MEDIUM",
+        "score": 530,
+        "dtiRatio": 0.3,
+        "drivers": [
+          {
+            "code": "R01_LOW_CREDIT_SCORE",
+            "contribution": -85
+          },
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          }
+        ],
+        "reasonCodes": [
+          "R01_LOW_CREDIT_SCORE"
+        ]
+      }
+    },
+    {
+      "id": "V10",
+      "note": "Boundary: debt-to-income exactly 0.4200, at the ceiling and therefore not above it. Approves with three supporting drivers and no reason codes at all.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0041",
+        "annualIncomeCad": 60000,
+        "monthlyDebtCad": 2100,
+        "requestedAmount": 10000,
+        "employmentStatus": "FULL_TIME",
+        "creditScore": 705,
+        "fileAgeMonths": 66,
+        "openTrades": 4,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "TRANSUNION_MOCK",
+        "creditScore": 705,
+        "fileAgeMonths": 66,
+        "openTrades": 4,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "APPROVE",
+        "riskTier": "MEDIUM",
+        "score": 560,
+        "dtiRatio": 0.42,
+        "drivers": [
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          },
+          {
+            "code": "P03_STABLE_EMPLOYMENT",
+            "contribution": 45
+          },
+          {
+            "code": "P05_ESTABLISHED_FILE",
+            "contribution": 40
+          }
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "id": "V11",
+      "note": "Boundary: debt-to-income exactly 0.3000; income exactly 25000 is not below the minimum; requested amount exactly half of income is not above the multiple. Also exercises the alphabetical tie break between P01 and P03 at +30.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0055",
+        "annualIncomeCad": 25000,
+        "monthlyDebtCad": 625,
+        "requestedAmount": 12500,
+        "employmentStatus": "PART_TIME",
+        "creditScore": 668,
+        "fileAgeMonths": 30,
+        "openTrades": 2,
+        "delinquencies24m": 0
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "EQUIFAX_MOCK",
+        "creditScore": 668,
+        "fileAgeMonths": 30,
+        "openTrades": 2,
+        "delinquencies24m": 0,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "APPROVE",
+        "riskTier": "MEDIUM",
+        "score": 650,
+        "dtiRatio": 0.3,
+        "drivers": [
+          {
+            "code": "P02_LOW_DTI",
+            "contribution": 55
+          },
+          {
+            "code": "P04_CLEAN_DELINQUENCY_HISTORY",
+            "contribution": 50
+          },
+          {
+            "code": "P01_STRONG_CREDIT_SCORE",
+            "contribution": 30
+          }
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "id": "V12",
+      "note": "Two delinquencies decline. Six drivers fire and the three largest are all adverse.",
+      "rules_version": "1.0.0",
+      "input": {
+        "applicantId": "APP-0038",
+        "annualIncomeCad": 34000,
+        "monthlyDebtCad": 1250,
+        "requestedAmount": 20000,
+        "employmentStatus": "UNEMPLOYED",
+        "creditScore": 612,
+        "fileAgeMonths": 15,
+        "openTrades": 3,
+        "delinquencies24m": 2
+      },
+      "expectedBureauSnapshot": {
+        "bureau": "TRANSUNION_MOCK",
+        "creditScore": 612,
+        "fileAgeMonths": 15,
+        "openTrades": 3,
+        "delinquencies24m": 2,
+        "thinFile": false,
+        "syntheticData": true
+      },
+      "expect": {
+        "outcome": "DENY",
+        "riskTier": "HIGH",
+        "score": 40,
+        "dtiRatio": 0.4412,
+        "drivers": [
+          {
+            "code": "R02_HIGH_DTI",
+            "contribution": -95
+          },
+          {
+            "code": "R04_RECENT_DELINQUENCY",
+            "contribution": -92
+          },
+          {
+            "code": "R07_UNSTABLE_EMPLOYMENT",
+            "contribution": -88
+          }
+        ],
+        "reasonCodes": [
+          "R02_HIGH_DTI",
+          "R04_RECENT_DELINQUENCY",
+          "R07_UNSTABLE_EMPLOYMENT",
+          "R01_LOW_CREDIT_SCORE",
+          "R06_HIGH_LOAN_TO_INCOME"
+        ]
+      }
+    }
+  ]
+}

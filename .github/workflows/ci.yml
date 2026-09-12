@@ -1,0 +1,129 @@
+name: CI
+
+# CSP451 2026F starter kit. This is the pipeline CheckPoint 2 asks you to have
+# running. Weeks 6 and 7 add deploy jobs beside it. Keep this job green.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mock-bureau:
+    name: Mock bureau lint and tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mock-bureau
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: mock-bureau/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Lint (syntax check every JavaScript file)
+        run: |
+          node --check server.js
+          for f in test/*.js; do node --check "$f"; done
+
+      - name: Unit tests
+        run: node --test
+
+      - name: Start the service and probe it
+        run: |
+          node server.js &
+          PID=$!
+          for i in $(seq 1 20); do
+            curl -fsS http://127.0.0.1:8080/health > /dev/null && break
+            sleep 0.5
+          done
+          curl -fsS http://127.0.0.1:8080/health
+          curl -fsS http://127.0.0.1:8080/bureau/v1/applicants/APP-0001
+          kill $PID
+
+  course-data:
+    name: Course data validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate the synthetic dataset and the decision test vectors
+        run: |
+          python - <<'PY'
+          import csv, json, sys
+
+          errors = []
+
+          with open("data/synthetic_applicants.csv", newline="") as f:
+              rows = list(csv.DictReader(f))
+          if len(rows) != 60:
+              errors.append(f"expected 60 applicant rows, found {len(rows)}")
+          expected_cols = ["applicant_id", "age_band", "province", "annual_income",
+                           "monthly_debt_payments", "requested_amount", "term_months",
+                           "employment_type", "months_at_address",
+                           "has_delinquency_12m", "thin_file"]
+          if list(rows[0].keys()) != expected_cols:
+              errors.append("applicant CSV columns changed")
+          if len({r["applicant_id"] for r in rows}) != len(rows):
+              errors.append("duplicate applicant_id values")
+
+          with open("data/decision_test_vectors.json") as f:
+              doc = json.load(f)
+          vectors = doc["vectors"]
+          if len(vectors) != 12:
+              errors.append(f"expected 12 vectors, found {len(vectors)}")
+          adverse = {"R01_LOW_CREDIT_SCORE", "R02_HIGH_DTI", "R03_INCOME_BELOW_MINIMUM",
+                     "R04_RECENT_DELINQUENCY", "R05_THIN_FILE", "R06_HIGH_LOAN_TO_INCOME",
+                     "R07_UNSTABLE_EMPLOYMENT", "R08_BUREAU_DATA_MISSING"}
+          supporting = {"P01_STRONG_CREDIT_SCORE", "P02_LOW_DTI", "P03_STABLE_EMPLOYMENT",
+                        "P04_CLEAN_DELINQUENCY_HISTORY", "P05_ESTABLISHED_FILE"}
+          for v in vectors:
+              if v["rules_version"] != "1.0.0":
+                  errors.append(f"{v['id']}: unexpected rules_version")
+              if v["expect"]["outcome"] not in {"APPROVE", "DENY", "MANUAL_REVIEW"}:
+                  errors.append(f"{v['id']}: bad outcome")
+              if v["expect"]["riskTier"] not in {"LOW", "MEDIUM", "HIGH"}:
+                  errors.append(f"{v['id']}: bad riskTier")
+              if len(v["expect"]["drivers"]) != 3:
+                  errors.append(f"{v['id']}: every decision must return exactly three drivers")
+              for d in v["expect"]["drivers"]:
+                  if d["code"] not in adverse | supporting:
+                      errors.append(f"{v['id']}: unknown driver code {d['code']}")
+                  if (d["contribution"] < 0) != (d["code"] in adverse):
+                      errors.append(f"{v['id']}: {d['code']} has the wrong contribution sign")
+              for code in v["expect"]["reasonCodes"]:
+                  if code not in adverse:
+                      errors.append(f"{v['id']}: {code} is not an adverse code and cannot be a reason code")
+
+          # No real personal information may ever enter this dataset.
+          banned = ["sin", "email", "phone", "postal_code", "first_name", "last_name",
+                    "full_name", "address_line", "date_of_birth"]
+          header = ",".join(rows[0].keys()).lower()
+          for word in banned:
+              if word in header:
+                  errors.append(f"applicant CSV must not contain a {word} column")
+
+          if errors:
+              print("\n".join(errors))
+              sys.exit(1)
+          print(f"OK: {len(rows)} applicants, {len(vectors)} decision vectors")
+          PY

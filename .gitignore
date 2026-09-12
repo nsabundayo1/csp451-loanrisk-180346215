@@ -1,0 +1,49 @@
+# CSP451 2026F starter kit
+# Secrets and credentials. Nothing in this block may ever reach a commit.
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.publishsettings
+*.PublishSettings
+azureauth.json
+credentials.json
+local.settings.json
+appsettings.Development.json
+.azure/
+*.tfvars
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+coverage/
+dist/
+build/
+*.tsbuildinfo
+
+# Python, if your team committed to the Python stack in Week 1
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local scratch, exports, and evidence staging
+tmp/
+scratch/
+*.log
+evidence/raw/
+*.zip

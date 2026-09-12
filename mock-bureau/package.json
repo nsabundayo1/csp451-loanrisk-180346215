@@ -1,0 +1,20 @@
+{
+  "name": "csp451-mock-bureau",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CSP451 2026F course-owned mock credit bureau service. Synthetic data only.",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
