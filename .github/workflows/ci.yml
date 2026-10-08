@@ -127,3 +127,30 @@ jobs:
               sys.exit(1)
           print(f"OK: {len(rows)} applicants, {len(vectors)} decision vectors")
           PY
+
+  lint-and-test:
+    name: Lint and unit test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test -- --ci --reporters=default
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            junit.xml
+            coverage/
+          if-no-files-found: ignore
