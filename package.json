@@ -1,0 +1,31 @@
+{
+  "name": "starter",
+  "version": "1.0.0",
+  "description": "Course-owned starter kit for **CSP451 – Cloud Service Platforms (Azure), Fall 2026**, Seneca Polytechnic. It supports the Allymon FinTech Loan Risk Engine case.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nsabundayo1/csp451-loanrisk-180346215.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nsabundayo1/csp451-loanrisk-180346215/issues"
+  },
+  "homepage": "https://github.com/nsabundayo1/csp451-loanrisk-180346215#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "jest": "^29.7.0"
+  }
+}
