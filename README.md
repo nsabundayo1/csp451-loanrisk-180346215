@@ -6,6 +6,15 @@ Fork this repository in Week 1. Do not clone it directly, and do not push to it.
 
 > **Synthetic data only.** Every applicant identifier, income figure, credit score, and bureau response in this repository is fabricated by the course. There is no real bureau behind the mock service, no real applicant behind any row of the dataset, and nothing here makes a lending decision. Using real personal information anywhere in this course is an academic integrity matter, not a style problem.
 
+## Student Profile
+
+- **Name:** Nathan Sabundayo
+- **Seneca Student ID:** 180346215
+- **Program:** CTY
+- **Team:** Pending assignment (missed Week 1 group enrollment, instructor contacted for placement)
+- **Stack:** Node.js/TypeScript
+- **Expected role:** To be determined once placed on a team.
+
 ## 1. What is in the kit
 
 | Path | What it is | First used |
