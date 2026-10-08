@@ -7,4 +7,4 @@ both students edit on purpose.
 |---|---|
 | App Service web app `app-loanrisk-<team>-<sid4>` | PaaS |
 
-The mock bureau VM is IaaS.
+The mock bureau VM is IaaS: Microsoft operates the hypervisor, we operate everything above it.
