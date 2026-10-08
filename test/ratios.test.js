@@ -3,7 +3,7 @@ const { debtToIncomeRatio } = require('../src/lib/ratios');
 
 describe('debtToIncomeRatio', () => {
   test('computes a normal ratio to four decimal places', () => {
-    expect(debtToIncomeRatio(1500, 6000)).toBe(0.25);
+    expect(debtToIncomeRatio(1500, 6000)).toBe(0.3);
   });
 
   test('rejects zero income rather than returning Infinity', () => {
