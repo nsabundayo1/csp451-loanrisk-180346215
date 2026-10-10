@@ -27,11 +27,11 @@ esac
 # ---------------------------------------------------------------------------
 TEAM="group6"                        # your team name, lowercase
 STUDENT_ID="180346215"               # your Seneca student ID
-ALERT_EMAIL="<your-seneca-email>"    # receives budget and auto-shutdown notifications
+ALERT_EMAIL="nsabundayo@myseneca.ca"    # receives budget and auto-shutdown notifications
 LAB_RG_OVERRIDE=""                   # leave empty to detect Student-RG-<labID> automatically
 
 if [[ "${TEAM}${STUDENT_ID}${ALERT_EMAIL}" == *"<"* ]]; then
-  echo "ERROR: replace <team>, <studentID> and <your-seneca-email> in part 1 first." >&2
+  echo "ERROR: replace <team>, <studentID> and nsabundayo@myseneca.ca in part 1 first." >&2
   exit 1
 fi
 
@@ -81,6 +81,9 @@ if ! az group show --name "${RG}" --output none 2>/dev/null; then
   exit 1
 fi
 echo "==> Using lab resource group ${RG}"
+# The lab group and the lab VNet decide the region (canadaeast in some lab accounts).
+LOCATION=$(az group show --name "${RG}" --query location -o tsv)
+echo "==> Using region ${LOCATION}"
 az configure --defaults location="${LOCATION}" group="${RG}"
 
 # ---------------------------------------------------------------------------
@@ -140,7 +143,17 @@ if az vm show --resource-group "${RG}" --name "${VM}" --output none 2>/dev/null;
   echo "==> Virtual machine ${VM} already exists, left in place"
 else
   echo "==> Creating virtual machine ${VM}"
+  # Join the existing lab VNet explicitly (Azure did not auto-join it in the lab).
+  LAB_VNET="Student-${RG#Student-RG-}-vnet"
+  LAB_SUBNET=$(az network vnet subnet list --resource-group "${RG}" --vnet-name "${LAB_VNET}" --query "[0].name" -o tsv)
+  if [[ -z "${LAB_SUBNET}" ]]; then
+    echo "ERROR: could not find a subnet in ${LAB_VNET}." >&2
+    exit 1
+  fi
+  echo "    Joining ${LAB_VNET} / ${LAB_SUBNET}"
   az vm create \
+    --vnet-name "${LAB_VNET}" \
+    --subnet "${LAB_SUBNET}" \
     --resource-group "${RG}" \
     --name "${VM}" \
     --location "${LOCATION}" \
@@ -226,7 +239,7 @@ cat <<EOF
 ==> Done.
     Resource group : ${RG}
     VM             : ${VM} (${VM_SIZE}, ${VM_IMAGE}, ${DISK_SKU}), ${POWER}
-    Virtual network: ${VNET_NAME} (lab VNet, not created by this script)
+    Virtual network: ${VNET_NAME}
     Public IP      : ${PUBLIC_IP}
     Private IP     : ${PRIVATE_IP}
     SSH allowed    : ${MY_IP}/32 only
