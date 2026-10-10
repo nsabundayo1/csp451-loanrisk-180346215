@@ -54,7 +54,7 @@ My lab group and lab VNet are in canadaeast, not canadacentral like the course n
 
 | Tool | What I used it for | What I verified or changed myself |
 |---|---|---|
-| Claude | Helped run code on Git Bash on Windows, and drafted the evidence scripts| I ran every command myself, checked the outputs, fixed the region problem with the lab VNet, and edited the write-up in my own words |
+| Claude | Helped run code on Git Bash on Windows, and drafted the evidence scripts| I ran every command myself, took the screenshots, checked the outputs, and ran the checks that showed my lab is in canadaeast
 
 **Reflection, one or two sentences.**
 I started this checkpoint way too late and had to rush it. Next time I will start the lab on day one so there is time to fix problems.
