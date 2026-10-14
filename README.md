@@ -230,3 +230,13 @@ The kit ships the course-owned pieces. Your team repository grows around them, a
 | What goes in the weekly client progress report? | `docs/weekly-progress-report-template.md` |
 | How is the bureau deployed on a VM? | `Week3/Week3_Learning_Notes.md`, section 7 |
 | What does the loan-risk API contract look like? | `Week7/Week7_Learning_Notes.md`, section 4 |
+
+## Week 4 network script
+`infra/scripts/week4-network.sh` builds the course network (VNet, three subnets, ASG, two NSGs,
+private DNS zone) and the private bureau VM in my lab group, then installs the mock bureau through
+`az vm run-command`. Run it with bash from the root of this repository, signed in with the lab account:
+
+    bash infra/scripts/week4-network.sh
+
+Edit only script section 1 (team, student ID, email). It is safe to re-run: existing resources are left in
+place. It never creates or deletes a resource group, a Bastion host or a flow log, and it contains no secrets.
