@@ -58,3 +58,56 @@ My lab group and lab VNet are in canadaeast, not canadacentral like the course n
 
 **Reflection, one or two sentences.**
 I started this checkpoint way too late and had to rush it. Next time I will start the lab on day one so there is time to fix problems.
+
+### Week 4: Azure networking and security, private bureau VM  (week of Sep 28 to Oct 4, 2026)
+
+**What I did.**
+- Removed the Week 3 VM stack (VM, NIC, disk, public IP, NSG) with the tag-based type loop, and kept the budget and the action group.
+- Built vnet-csp451-group6-dev (10.20.0.0/16) with snet-bureau, snet-app (delegated to App Service) and snet-data (delegated to PostgreSQL), plus asg-bureau-group6, nsg-bureau-group6 and nsg-app-group6.
+- Redeployed vm-bureau-group6 into snet-bureau with no public IP and no SSH, and installed the mock bureau on Node.js 22 with az vm run-command and ufw.
+- Created the private DNS zone loanrisk.internal with the link link-bureau-group6 and an A record for bureau.
+- Proved one allowed and two blocked flows with Network Watcher IP flow verify, and ran next hop, effective rules and connection troubleshoot.
+- Committed week4-network.sh and the README section in pull request #11 (commit 2537ffb).
+- I did this work late, on 2026-10-14 and 2026-10-15, not during the week of Sep 28.
+
+**What blocked me and how I resolved it.**
+My home PC was not available, so I installed the Azure CLI and Node.js again on a school laptop and signed in to the lab from there. Git then refused to commit because no name or email was set, and a line-ending setting made README.md look completely rewritten in the staged diff (232 deletions). I set the name and email for this repository, restored README.md and appended the section again, and the diff then showed only added lines. My teammate was not available to review the pull request, so I merged it myself.
+
+**What I will do next week.**
+- Finish CP5 and the missing CP1 evidence.
+- Catch up the weekly progress reports with my team.
+
+**Contribution evidence.**
+
+| Artifact | Link or identifier |
+|---|---|
+| Commits | 2537ffb |
+| Pull requests raised | #11 |
+| Pull requests reviewed | none this week |
+| Issues or board items moved | none |
+
+**Azure cost check-in.**
+
+| Field | Value |
+|---|---|
+| Date checked | 2026-10-15 at 17:58 EDT |
+| Month-to-date cost, lab resource group | 0.96 USD for Student-RG-2400807 |
+| Where I read it | Cost Management query at the lab group scope |
+| Largest cost line this week | not broken down; the query returns the group total only |
+| Budget alerts received | none; usage is far below the first threshold of 10 USD |
+| End-of-week cost control action taken | deallocated the bureau VM, confirmed no public IP is left |
+
+**Governance check.**
+
+- Tags on every resource I created this week: yes; the only untagged items are the lab VNet and the NetworkWatcherAgentLinux extension, which the tagging commands do not cover
+- Auto-shutdown on every VM I created: yes
+- Secret scan clean on my branch: yes
+
+**AI-tool use this week.**
+
+| Tool | What I used it for | What I verified or changed myself |
+|---|---|---|
+| Claude | Adapted the course network script for Git Bash on Windows, wrote the evidence scripts, and helped draft the short answers and this document | I ran every command myself, took the screenshots, and checked the outputs |
+
+**Reflection, one or two sentences.**
+I did this late and had to redo my setup on another computer, which made it more stressful than it needed to be. Next time I will start the lab the week it is released.
