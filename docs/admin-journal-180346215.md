@@ -71,7 +71,7 @@ I started this checkpoint way too late and had to rush it. Next time I will star
 - I did this work late, on 2026-10-14 and 2026-10-15, not during the week of Sep 28.
 
 **What blocked me and how I resolved it.**
-My home PC was not available, so I installed the Azure CLI and Node.js again on a school laptop and signed in to the lab from there. Git then refused to commit because no name or email was set, and a line-ending setting made README.md look completely rewritten in the staged diff (232 deletions). I set the name and email for this repository, restored README.md and appended the section again, and the diff then showed only added lines. My teammate was not available to review the pull request, so I merged it myself.
+My home PC was not available, so I installed the Azure CLI and Node.js again on my personal laptop and signed in to the lab from there. Git then refused to commit because no name or email was set, and a line-ending setting made README.md look completely rewritten in the staged diff (232 deletions). I set the name and email for this repository, restored README.md and appended the section again, and the diff then showed only added lines. My teammate was not available to review the pull request, so I merged it myself.
 
 **What I will do next week.**
 - Finish CP5 and the missing CP1 evidence.
