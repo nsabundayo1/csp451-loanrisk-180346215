@@ -1,0 +1,13 @@
+{
+  "name": "loanrisk-api",
+  "version": "0.5.1",
+  "private": true,
+  "description": "Allymon Loan Risk Engine API, Week 5 minimal version. Synthetic data only.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
