@@ -47,3 +47,7 @@ scratch/
 *.log
 evidence/raw/
 *.zip
+api.zip
+worker.zip
+node_modules/
+local.settings.json

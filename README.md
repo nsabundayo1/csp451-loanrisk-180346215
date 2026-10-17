@@ -240,3 +240,23 @@ private DNS zone) and the private bureau VM in my lab group, then installs the m
 
 Edit only script section 1 (team, student ID, email). It is safe to re-run: existing resources are left in
 place. It never creates or deletes a resource group, a Bastion host or a flow log, and it contains no secrets.
+
+## Week 5 PaaS layer
+`infra/scripts/week5-paas.sh` builds the Week 5 PaaS layer in my lab group: the Linux B1 App Service plan
+`plan-loanrisk-group6`, the web app `app-loanrisk-group6-6215` (Node.js 22), the storage account
+`stfuncgroup66215` and the Function app `func-loanrisk-group6-6215` on the same plan. It applies the HTTPS,
+TLS 1.2 and FTPS settings, assigns managed identities, sets the application settings, zip-deploys `api/`,
+and adds regional VNet integration into the existing `snet-app` with route-all. Run it with bash from the
+root of this repository, signed in with the lab account:
+
+    INTEGRATE_FUNCTION=no bash infra/scripts/week5-paas.sh   # first run
+    bash infra/scripts/week5-paas.sh                         # after the first decisionWorker call (F7)
+
+- `api/` is the minimal Loan Risk Engine API (`GET /health`, `GET /api/v1/bureau-check/APP-nnnn`). It reads
+  `BUREAU_BASE_URL` and `RULES_VERSION` from application settings and fails fast if `BUREAU_BASE_URL` is missing.
+  Test it locally with `cd api && BUREAU_BASE_URL=http://localhost:8080 RULES_VERSION=1.0.0 npm start`.
+- `worker/` is the Functions v4 (Node.js) app with the HTTP `decisionWorker` (function auth level). It echoes
+  `x-correlation-id`. Install with `cd worker && npm ci`.
+- The script is safe to re-run: every create is guarded by an existence check. It prints no secret values.
+- The slot exercise (S1 scale-up, staging slot, swap, delete, back to B1) is a manual timed sequence and is not
+  part of the script.
